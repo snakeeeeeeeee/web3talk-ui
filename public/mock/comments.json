@@ -1,0 +1,15 @@
+{
+  "comments": [
+    {
+      "id": "1",
+      "author": "作者1",
+      "content": "这是第一个评论的内容。"
+    },
+    {
+      "id": "2",
+      "author": "作者2",
+      "content": "这是第二个评论的内容。"
+    }
+  ],
+  "hasNext": true
+}
