@@ -17,6 +17,7 @@ const CommentList = ({apiUrl, refreshComments}) => {
     useEffect(() => {
         fetchComments();
     }, [page]);
+
     const fetchComments = async () => {
         try {
             //const response = await axios.get(`${apiUrl}?page=${page}&pageSize=${pageSize}`);
