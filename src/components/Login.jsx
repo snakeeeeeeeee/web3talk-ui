@@ -77,7 +77,7 @@ const LoginButton = () => {
             window.userWalletAddress = account;
             window.localStorage.setItem("userWalletAddress", account);
 
-            // 这里您可以把签名发送到后端进行验证
+            // 发送到后端验证
 
         } catch (err) {
             console.error(err);
