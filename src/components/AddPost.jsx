@@ -76,6 +76,9 @@ const AddPost = () => {
         console.log(value)
     }
 
+
+
+
     const onPublishPost = () => {
         console.log(`开始发布评论内容是：${postText}`)
         let validate = validatePostContent(postText)
@@ -85,8 +88,8 @@ const AddPost = () => {
 
         // 开始发布，展示加载动画
         setIsPublishing(false);
+        //  调用后端接口await xxx or
 
-        //  调用后端接口
 
         // 调用后端接口
 

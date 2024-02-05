@@ -11,6 +11,32 @@ const LoginButton = () => {
     const [message, setMessage] = useState('');
     const [signature, setSignature] = useState('');
 
+    // 需要做成配置
+    // const chainId = '0x5';
+    // const chainInfo = {
+    //     chainId: chainId,
+    //     rpcUrls: ["https://eth-goerli.api.onfinality.io/public"],
+    //     chainName: 'Goerli',
+    //     nativeCurrency: {
+    //         name: 'ETH',
+    //         symbol: 'ETH',
+    //         decimals: 18,
+    //     },
+    //     blockExplorerUrls: ['https://goerli.etherscan.io/'],
+    // }
+
+    const chainId = '0x5d50';
+    const chainInfo = {
+        chainId: chainId,
+        rpcUrls: ["https://sepolia.blast.io"],
+        chainName: 'Blast Sepolia Testnet',
+        nativeCurrency: {
+            name: 'ETH',
+            symbol: 'ETH',
+            decimals: 18,
+        },
+        blockExplorerUrls: ['https://goerli.etherscan.io/'],
+    }
 
     const logout = () => {
         console.log('Logging out...');
@@ -22,35 +48,23 @@ const LoginButton = () => {
     };
 
 
-    const switchNetwork = async (networkId) => {
+    const addAndSwitchNetwork = async (provider) => {
         try {
-            if (window.ethereum) {
-                await window.ethereum.request({
-                    method: 'wallet_switchEthereumChain',
-                    params: [{chainId: Web3.utils.toHex(networkId)}],
-                });
-            } else {
-                console.error('wallet is not installed!');
-            }
+            // 检查用户是否已经在你设定的网络上
+            await provider.send('wallet_switchEthereumChain', [{chainId: chainId}]);
         } catch (switchError) {
+            // 如果用户不在你设定的网络上，尝试向用户的MetaMask钱包添加该网络
             if (switchError.code === 4902) {
                 try {
-                    await window.ethereum.request({
-                        method: 'wallet_addEthereumChain',
-                        params: [
-                            {
-                                chainId: Web3.utils.toHex(networkId),
-                            },
-                        ],
-                    });
+                    await provider.send('wallet_addEthereumChain', [chainInfo]);
                 } catch (addError) {
-                    console.error('Failed to add the network:', addError);
+                    console.error(addError);
                 }
             } else {
-                console.error('Failed to switch the network:', switchError);
+                console.error(switchError);
             }
         }
-    };
+    }
 
 
     const login = async () => {
@@ -63,14 +77,14 @@ const LoginButton = () => {
         try {
             await window.ethereum.request({method: 'eth_requestAccounts'});
             const provider = new ethers.BrowserProvider(window.ethereum);
+            await addAndSwitchNetwork(provider);
             const signer = await provider.getSigner();
             const account = await signer.getAddress();
-            setAccount(account);
 
             const message = `Welcome to web3talk, an open communication platform.`;
             const signature = await signer.signMessage(message);
             setSignature(signature)
-            console.log(signature)
+            console.log(`签名是：${signature}`)
 
 
             // 将账户地址信息存储到localStorage中
@@ -79,6 +93,7 @@ const LoginButton = () => {
 
             // 发送到后端验证
 
+            setAccount(account);
         } catch (err) {
             console.error(err);
         }

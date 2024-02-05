@@ -17,7 +17,7 @@ import CommentDialog from "./CommentDialog";
 const Post = () => {
 
 
-    let postContent = "帖子的正文内容asdas ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
+    let postContent = "帖子的正文内容asdas sssssssssssssssssssssss是生生世世生生世世生生世世生生世世生生世世生生世世生生世世生生世世生生世世是生生世世试试sssssssssssssssssssssssssssssssssssssssssssssssssssssss"
     // 使用state来控制评论列表的显示
     const [showComments, setShowComments] = useState(false);
 

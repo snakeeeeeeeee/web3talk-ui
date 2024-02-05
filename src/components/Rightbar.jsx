@@ -15,9 +15,10 @@ import React from "react";
 
 const Rightbar = () => {
     return (
-        <Box flex={2} p={2} sx={{ display: { xs: "none", sm: "block" } }}>
-            <Box position="fixed" width={300}>
-                <Typography variant="h6" fontWeight={100}>
+        <Box flex={1} p={2} sx={{ display: { xs: "none", sm: "block" } }}>
+            {/*<Box position="fixed" width={300}>*/}
+            <Box >
+                {/*<Typography variant="h6" fontWeight={100}>
                     Online Friends
                 </Typography>
                 <AvatarGroup max={7}>
@@ -34,26 +35,7 @@ const Rightbar = () => {
                         src="https://material-ui.com/static/images/avatar/3.jpg"
                     />
                     <Avatar alt="Agnes Walker" src="" />
-                    <Avatar
-                        alt="Trevor Henderson"
-                        src="https://material-ui.com/static/images/avatar/6.jpg"
-                    />
-                    <Avatar
-                        alt="Trevor Henderson"
-                        src="https://material-ui.com/static/images/avatar/7.jpg"
-                    />
-                    <Avatar
-                        alt="Trevor Henderson"
-                        src="https://material-ui.com/static/images/avatar/8.jpg"
-                    />
-                    <Avatar
-                        alt="Trevor Henderson"
-                        src="https://material-ui.com/static/images/avatar/7.jpg"
-                    />
-                    <Avatar
-                        alt="Trevor Henderson"
-                        src="https://material-ui.com/static/images/avatar/8.jpg"
-                    />
+
                 </AvatarGroup>
                 <Typography variant="h6" fontWeight={100} mt={2} mb={2}>
                     Latest Photos
@@ -147,7 +129,7 @@ const Rightbar = () => {
                             }
                         />
                     </ListItem>
-                </List>
+                </List>*/}
             </Box>
         </Box>
     );
