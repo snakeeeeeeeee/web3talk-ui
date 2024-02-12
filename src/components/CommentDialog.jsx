@@ -1,24 +1,21 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {
     Dialog,
     DialogTitle,
     DialogContent,
     DialogActions,
     Button,
-    Card,
     TextField,
-    CardContent,
     IconButton,
-    Typography,
     List,
-    ListItem, useTheme,
+    useTheme,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import MoodIcon from '@mui/icons-material/Mood';
 import CircularProgress from '@mui/material/CircularProgress';
 import EmojiPicker from 'emoji-picker-react';
 import CommentList from "./CommentList";
+import {ToastContext} from "../App";
 
 const CommentDialog = ({open = false, onClose, postInfo}) => {
     const theme = useTheme();
@@ -40,6 +37,9 @@ const CommentDialog = ({open = false, onClose, postInfo}) => {
     const [refreshCommentsTrigger, setRefreshCommentsTrigger] = useState(0);
     const [isPublishing, setIsPublishing] = useState(false);
 
+    // toast
+    const {toastConfig, msg, setToastConfig} = useContext(ToastContext);
+
     const onEmojiClick = (emojiObject) => {
         console.log(emojiObject);
         setIsPublishing(true); // 开始发布，展示加载动画
@@ -57,15 +57,15 @@ const CommentDialog = ({open = false, onClose, postInfo}) => {
         // 清除文本内容
         setCommentText("");
         // 添加评论接口,模拟延时
-        setIsPublishing(true); //  开始发布，展示加载动画
-        setTimeout(function () {
-            console.log("发布中....");
-        }, 1000);
-
-        setIsPublishing(false); // 隐藏加载动画
+        //setIsPublishing(true); //  开始发布，展示加载动画
+        //setIsPublishing(false); // 隐藏加载动画
         console.log("发成功....");
+        setToastConfig({toastOpen: true, msg: "回复成功!"})
         // 重新加载评论列表
         setRefreshCommentsTrigger(refreshCommentsTrigger + 1);
+
+        // 关闭对话框
+        onClose && onClose();
 
 
     };
@@ -81,7 +81,7 @@ const CommentDialog = ({open = false, onClose, postInfo}) => {
                 '& .MuiDialog-paper': {
                     display: 'flex',
                     flexDirection: 'column',
-                    position: 'relative' // Position relative for absolute positioning of the close button
+                    position: 'relative'
                 }
             }}
         >

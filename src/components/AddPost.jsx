@@ -10,18 +10,15 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {
-    Add as AddIcon,
-    DateRange,
-    EmojiEmotions,
-    Image,
-    PersonAdd,
-    VideoCameraBack,
+    Add as AddIcon
 } from "@mui/icons-material";
 import {Box} from "@mui/system";
 import MoodIcon from "@mui/icons-material/Mood";
 import EmojiPicker from "emoji-picker-react";
+import {ToastContext} from '../App';
+
 
 const SytledModal = styled(Modal)({
     display: "flex",
@@ -45,6 +42,14 @@ const AddPost = () => {
     const [error, setError] = useState(false);
     const [helperText, setHelperText] = useState('');
     const [isPublishing, setIsPublishing] = useState(true);
+
+    // toast
+    const {toastConfig, msg, setToastConfig} = useContext(ToastContext);
+
+    const handleCloseToast = () => {
+        setToastConfig({toastOpen: false});
+    };
+
     const onEmojiClick = (emojiObject) => {
         console.log(emojiObject);
         setPostText(postText + emojiObject.emoji);
@@ -77,8 +82,6 @@ const AddPost = () => {
     }
 
 
-
-
     const onPublishPost = () => {
         console.log(`开始发布评论内容是：${postText}`)
         let validate = validatePostContent(postText)
@@ -100,7 +103,8 @@ const AddPost = () => {
         // 清理内容
         setPostText("");
         setOpen(false);
-
+        // 发布成功，弹出toast
+        setToastConfig({toastOpen: true, msg: "发布成功!"})
     }
 
     return (
