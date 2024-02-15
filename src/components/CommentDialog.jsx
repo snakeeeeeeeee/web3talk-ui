@@ -21,8 +21,8 @@ const CommentDialog = ({open = false, onClose, postInfo}) => {
     const theme = useTheme();
     const {
         id = 1,
-        title = '默认标题',
-        content = '默认内容'
+        title = '1',
+        content = '2'
     } = postInfo;
 
     const handleClose = () => {
@@ -59,15 +59,12 @@ const CommentDialog = ({open = false, onClose, postInfo}) => {
         // 添加评论接口,模拟延时
         //setIsPublishing(true); //  开始发布，展示加载动画
         //setIsPublishing(false); // 隐藏加载动画
-        console.log("发成功....");
-        setToastConfig({toastOpen: true, msg: "回复成功!"})
+        setToastConfig({toastOpen: true, msg: "Comment Success!"})
         // 重新加载评论列表
         setRefreshCommentsTrigger(refreshCommentsTrigger + 1);
 
         // 关闭对话框
         onClose && onClose();
-
-
     };
 
     return (
@@ -125,14 +122,14 @@ const CommentDialog = ({open = false, onClose, postInfo}) => {
                 }
                 <TextField
                     sx={{flexGrow: 1}}
-                    placeholder="添加评论..."
+                    placeholder="Add Comment..."
                     multiline
                     variant="outlined"
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
                 />
                 <Button variant="contained" color="primary" onClick={publishComment} disabled={isPublishing}>
-                    {isPublishing ? <CircularProgress size={24}/> : '发布'}
+                    {isPublishing ? <CircularProgress size={24}/> : 'Publish'}
                 </Button>
             </DialogActions>
         </Dialog>

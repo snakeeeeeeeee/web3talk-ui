@@ -1,9 +1,9 @@
-import {Box, Stack, Skeleton, Tabs, Tab} from "@mui/material";
+import {Box, Stack, Skeleton, Tab} from "@mui/material";
 import React, {useState} from "react";
 import {TabContext, TabList, TabPanel} from "@material-ui/lab";
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
-import Post from "./Post";
+import PostList from "./PostList";
 
 
 function CustomTabPanel(props) {
@@ -33,12 +33,12 @@ CustomTabPanel.propTypes = {
     value: PropTypes.number.isRequired,
 };
 
-function a11yProps(index) {
+/*function a11yProps(index) {
     return {
         id: `simple-tab-${index}`,
         'aria-controls': `simple-tabpanel-${index}`,
     };
-}
+}*/
 
 
 const Feed = () => {
@@ -55,10 +55,11 @@ const Feed = () => {
 
     return (
         <Box flex={4} p={{xs: 0, md: 2}}>
-            <TabContext value={tableIndex} >
+            <TabContext value={tableIndex}>
                 <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
-                    <TabList onChange={handleChange} aria-label="lab API tabs example" indicatorColor="secondary" centered>
-                        <Tab label="推荐" value="1"/>
+                    <TabList onChange={handleChange} aria-label="lab API tabs example" indicatorColor="secondary"
+                             centered>
+                        <Tab label="Recommend" value="1"/>
                         {/*<Tab label="热点" value="2"/>*/}
                     </TabList>
                 </Box>
@@ -72,8 +73,25 @@ const Feed = () => {
                         </Stack>
                     ) : (
                         <>
-                            <Post/>
-                            <Post/>
+                            {/* 迭代列表 */}
+                            {/*<Post postInfo={{
+                                id: 99999999,
+                                title: "Default Title",
+                                content: "Default Content",
+                                postTime: "2024-01-01 00:00:00",
+                                author: "",
+                                isLike: false
+                            }}/>
+                            <Post postInfo={{
+                                id: 99999999,
+                                title: "Default Title",
+                                content: "Default Content",
+                                postTime: "2024-01-01 00:00:00",
+                                author: "",
+                                isLike: false
+                            }}/>*/}
+                            <PostList/>
+
                         </>
                     )}
                 </TabPanel>

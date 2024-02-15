@@ -15,10 +15,10 @@ import React from "react";
 
 const Rightbar = () => {
     return (
-        <Box flex={1} p={2} sx={{ display: { xs: "none", sm: "block" } }}>
-            {/*<Box position="fixed" width={300}>*/}
-            <Box >
-                {/*<Typography variant="h6" fontWeight={100}>
+        <Box flex={2} p={2} sx={{ display: { xs: "none", sm: "block" } }}>
+            <Box position="fixed" width={300}>
+            {/*<Box >*/}
+                <Typography variant="h6" fontWeight={100}>
                     Online Friends
                 </Typography>
                 <AvatarGroup max={7}>
@@ -59,9 +59,10 @@ const Rightbar = () => {
                             alt=""
                         />
                     </ImageListItem>
+
                 </ImageList>
                 <Typography variant="h6" fontWeight={100} mt={2}>
-                    xxxxxxx
+
                 </Typography>
                 <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                     <ListItem alignItems="flex-start">
@@ -129,7 +130,7 @@ const Rightbar = () => {
                             }
                         />
                     </ListItem>
-                </List>*/}
+                </List>
             </Box>
         </Box>
     );

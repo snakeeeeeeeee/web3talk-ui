@@ -5,7 +5,6 @@ import {
     CardActions,
     CardContent,
     CardHeader,
-    CardMedia,
     Checkbox,
     IconButton,
     Typography,
@@ -14,17 +13,15 @@ import React, {useState} from 'react';
 import CommentDialog from "./CommentDialog";
 
 
-const Post = () => {
-
-
-    let postContent = "帖子的正文内容asdas sssssssssssssssssssssss是生生世世生生世世生生世世生生世世生生世世生生世世生生世世生生世世生生世世是生生世世试试sssssssssssssssssssssssssssssssssssssssssssssssssssssss"
-    // 使用state来控制评论列表的显示
-    const [showComments, setShowComments] = useState(false);
-
-    function openCommentList() {
-        setShowComments(prev => !prev);
-    }
-
+const Post = ({postInfo}) => {
+    /*const {
+        id = 99999999,
+        title = "Default Title",
+        content = "Default Content",
+        postTime = "2024-01-01 00:00:00",
+        author = "",
+        isLike = false
+    } = postInfo;*/
 
     const [showCommentDialogs, setCommentDialog] = useState(false);
 
@@ -53,13 +50,17 @@ const Post = () => {
                         <MoreVert/>
                     </IconButton>
                 }
-                title="John Doe"
-                subheader="September 14, 2022"
+                title={
+                    <Typography variant="h6" style={{ fontWeight: 'bold' }}>
+                        {postInfo.title}
+                    </Typography>
+                }
+                subheader={postInfo.postTime}
             />
 
             <CardContent>
                 <Typography variant="body2" color="text.secondary">
-                    {postContent}
+                    {postInfo.content}
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
@@ -77,8 +78,8 @@ const Post = () => {
                 open={showCommentDialogs}
                 postInfo={{
                     id: 1,
-                    title: '帖子标题',
-                    content: postContent
+                    title: postInfo.title,
+                    content: postInfo.content
                 }}
                 onClose={handleCloseDialog}
             />
