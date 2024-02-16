@@ -210,7 +210,8 @@ const AddPost = () => {
                     });
 
                 }, error => {
-                    console.log('Failed to store post ID in the contract', error);
+                    setIsLoading(false);
+                    console.log( error);
                 });
 
             }
