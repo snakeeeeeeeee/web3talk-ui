@@ -12,6 +12,7 @@ const http = axios.create({
 http.interceptors.request.use(function (config) {
     let userWalletAddress = window.localStorage.getItem("userWalletAddress");
     if (userWalletAddress == null) {
+
         console.log("请先登录")
     }
     return config;
