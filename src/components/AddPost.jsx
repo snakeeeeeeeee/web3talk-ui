@@ -31,7 +31,7 @@ const POST_CONTRACT_ABI = require('../abi/post.json');
 const POST_CONTRACT_ADDRESS = "0xda310d12Bbd4Ab8e550244a75Da1f9C10C70AD7f";
 
 
-const chainId = '168587773';
+const chainId = '0xa0c71fd';
 const chainInfo = {
     chainId: chainId,
     rpcUrls: ["https://sepolia.blast.io"],

@@ -5,6 +5,20 @@ import {ethers} from "ethers";
 import http from "../web3talkRpc";
 import {ToastContext} from "../App";
 
+
+const chainId = '0xa0c71fd';
+const chainInfo = {
+    chainId: chainId,
+    rpcUrls: ["https://sepolia.blast.io"],
+    chainName: 'Blast Sepolia',
+    nativeCurrency: {
+        name: 'ETH',
+        symbol: 'ETH',
+        decimals: 18,
+    },
+    blockExplorerUrls: ['https://testnet.blastscan.io/'],
+}
+
 const LoginButton = () => {
     const [account, setAccount] = useState('');
     const [message, setMessage] = useState('');
@@ -13,32 +27,6 @@ const LoginButton = () => {
     // toast
     const {toastConfig, msg, setToastConfig} = useContext(ToastContext);
 
-    // 需要做成配置
-    // const chainId = '0x5';
-    // const chainInfo = {
-    //     chainId: chainId,
-    //     rpcUrls: ["https://eth-goerli.api.onfinality.io/public"],
-    //     chainName: 'Goerli',
-    //     nativeCurrency: {
-    //         name: 'ETH',
-    //         symbol: 'ETH',
-    //         decimals: 18,
-    //     },
-    //     blockExplorerUrls: ['https://goerli.etherscan.io/'],
-    // }
-
-    const chainId = '0x5d50';
-    const chainInfo = {
-        chainId: chainId,
-        rpcUrls: ["https://sepolia.blast.io"],
-        chainName: 'Blast Sepolia Testnet',
-        nativeCurrency: {
-            name: 'ETH',
-            symbol: 'ETH',
-            decimals: 18,
-        },
-        blockExplorerUrls: ['https://goerli.etherscan.io/'],
-    }
 
     const logout = () => {
         console.log('Logging out...');
@@ -57,7 +45,7 @@ const LoginButton = () => {
             await provider.send('wallet_switchEthereumChain', [{chainId: chainId}]);
         } catch (switchError) {
             // 如果用户不在你设定的网络上，尝试向用户的MetaMask钱包添加该网络
-            if (switchError.code === 4902) {
+            if (switchError.error.code === -32602) {
                 try {
                     await provider.send('wallet_addEthereumChain', [chainInfo]);
                 } catch (addError) {
@@ -87,7 +75,7 @@ const LoginButton = () => {
             const message = `Welcome to web3talk, an open communication platform.`;
             const signature = await signer.signMessage(message);
             setSignature(signature)
-            console.log(`签名是：${signature}`)
+            //console.log(`签名是：${signature}`)
 
 
             // 将账户地址信息存储到localStorage中
