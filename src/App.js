@@ -4,8 +4,9 @@ import Rightbar from "./components/Rightbar";
 import {Box, createTheme, Stack, ThemeProvider} from "@mui/material";
 import Navbar from "./components/Navbar";
 import AddPost from "./components/AddPost";
-import React, {createContext, useState} from 'react';
+import React, {createContext, useCallback, useMemo, useState} from 'react';
 import Toast from "./components/Toast";
+import { v4 as uuidv4 } from 'uuid';
 
 
 export const ToastContext = createContext({
@@ -20,18 +21,21 @@ export const LoginContext = createContext({
     addr: ''
 });
 
-export const PostListContext = createContext([]);
+export const PostListContext = createContext();
 
 function App() {
     const [mode, setMode] = useState("light");
-    const [postList, setPostList] = useState({
-        id: 99999999,
-        title: "Default Title",
-        content: "Default Content",
-        postTime: "2024-01-01 00:00:00",
-        author: "",
-        isLike: false
-    });
+
+    const [refreshPostListKey, setRefreshPostListKey] = useState("");
+    const increasePostListKey = useCallback(() => {
+        debugger
+        setRefreshPostListKey(uuidv4());
+    }, []);
+    const contextValue = useMemo(() => ({
+        refreshPostListKey,
+        increasePostListKey,
+    }), [refreshPostListKey, increasePostListKey]);
+
     const [toastConfig, setToastConfig] = useState(
         {toastOpen: false, msg: ''}
     );
@@ -50,7 +54,7 @@ function App() {
     return (
         <ThemeProvider theme={darkTheme}>
             <ToastContext.Provider value={{...toastConfig, setToastConfig}}>
-                <PostListContext.Provider value={{...postList, setPostList}}>
+                <PostListContext.Provider value={contextValue}>
                     <Box bgcolor={"background.default"} color={"text.primary"}>
                         <Navbar/>
                         <Stack direction="row" spacing={2} justifyContent="space-between">

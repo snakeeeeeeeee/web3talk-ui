@@ -33,15 +33,10 @@ CustomTabPanel.propTypes = {
     value: PropTypes.number.isRequired,
 };
 
-/*function a11yProps(index) {
-    return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
-    };
-}*/
 
 
 const Feed = () => {
+    console.log("init Feed...")
     const [loading, setLoading] = useState(true);
     const [tableIndex, setTableIndex] = React.useState("1");
 

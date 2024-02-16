@@ -1,52 +1,74 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback, useEffect, useContext} from 'react';
 import axios from 'axios';
-import {List, ListItem, Card, CardContent, Typography, Box} from '@mui/material';
+import {List, ListItem, Card, CardContent, Typography, Box, CardHeader} from '@mui/material';
+import {PostListContext} from "../App";
+import http from "../web3talkRpc";
 
-const pageSize = 10; // 选择每页加载多少条评论
+const pageSize = 1000; // 选择每页加载多少条评论
 
-const CommentList = ({apiUrl, refreshComments}) => {
+const CommentList = ({targetId, refreshCommentsKey}) => {
     const [comments, setComments] = useState([]);
-    const [page, setPage] = useState(1);
-    const [hasMoreComments, setHasMoreComments] = useState(true);
+    const [hasMoreComments, setHasMoreComments] = useState(false);
+    const [startId, setStartId] = useState(0);
 
     useEffect(() => {
-        setComments([]); // 清空当前评论列表
-        setPage(1); // 重置页码到第一页
-    }, [refreshComments]); // 当 refreshComments 变化时，重置状态并重新加载评论
+        const fetchComments = async () => {
+            try {
+                let reqBody = {
+                    "currentAddress": window.localStorage.getItem("userWalletAddress"),
+                    "pageSize": pageSize,
+                    "startId": 0,
+                    "type": 0,
+                    "targetId": targetId
+                };
+                let config = {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                };
+                const response = await http.post("/api/v1/comment/list", reqBody, config);
+                if (response.data.code === "000000") {
+                    let respData = response.data.data;
+                    let commentArr = respData.comments
+                    if (commentArr) {
+                        setComments(commentArr);
+                        setHasMoreComments(respData.hasNextPage);
+                        setStartId(respData.endId);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to fetch posts:', error);
+            }
+        };
 
-    useEffect(() => {
         fetchComments();
-    }, [page]);
+    }, [refreshCommentsKey]);
 
-    const fetchComments = async () => {
-        try {
-            //const response = await axios.get(`${apiUrl}?page=${page}&pageSize=${pageSize}`);
-            const response = await axios.get('/mock/comments.json');
-            setComments((prev) => [...prev, ...response.data.comments]);
-            setHasMoreComments(response.data.hasNext);
-        } catch (error) {
-            // 处理错误情况
-            console.error('Failed to fetch comments:', error);
-        }
-    };
 
     const handleScroll = useCallback(({target}) => {
         if (target.scrollHeight - target.scrollTop <= target.clientHeight && hasMoreComments) {
-            setPage(prevPage => prevPage + 1);
+
         }
-    }, [hasMoreComments]);
+    }, []);
 
 
     return (
         <Box onScroll={handleScroll} sx={{overflowY: 'auto', maxHeight: 300, paddingRight: 4}}>
-            <List>
+            <List sx={{overflowY: 'auto', maxHeight: 300, paddingRight: 4}}>
                 {comments.map((comment, index) => (
                     <ListItem key={index}>
                         <Card variant="outlined" sx={{width: '100%'}}>
+                            <CardHeader title={
+                                <Box>
+                                    <Typography variant="h6">
+                                        {"0x..."}
+                                    </Typography>
+                                    <Typography>
+                                        {comment.commentTime}
+                                    </Typography>
+                                </Box>
+                            }/>
                             <CardContent>
-                                <Typography gutterBottom variant="h6">
-                                    {comment.author}
-                                </Typography>
                                 <Typography variant="body1">
                                     {comment.content}
                                 </Typography>

@@ -77,7 +77,7 @@ const Post = ({postInfo}) => {
             <CommentDialog
                 open={showCommentDialogs}
                 postInfo={{
-                    id: 1,
+                    id: postInfo.id,
                     title: postInfo.title,
                     content: postInfo.content
                 }}

@@ -9,7 +9,10 @@ import {
     TextField,
     Tooltip,
     Typography,
+    Backdrop
 } from "@mui/material";
+import Link from '@material-ui/core/Link';
+import {ethers} from 'ethers';
 import React, {useContext, useState, useEffect} from "react";
 import {
     Add as AddIcon
@@ -20,6 +23,26 @@ import EmojiPicker from "emoji-picker-react";
 import {ToastContext, LoginContext} from '../App';
 import CloseIcon from "@mui/icons-material/Close";
 import http from '../web3talkRpc';
+import {PostListContext} from "../App";
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+const POST_CONTRACT_ABI = require('../abi/post.json');
+
+const POST_CONTRACT_ADDRESS = "0xda310d12Bbd4Ab8e550244a75Da1f9C10C70AD7f";
+
+
+const chainId = '168587773';
+const chainInfo = {
+    chainId: chainId,
+    rpcUrls: ["https://sepolia.blast.io"],
+    chainName: 'Blast Sepolia',
+    nativeCurrency: {
+        name: 'ETH',
+        symbol: 'ETH',
+        decimals: 18,
+    },
+    blockExplorerUrls: ['https://testnet.blastscan.io/'],
+}
 
 
 const StyledModal = styled(Modal)({
@@ -44,7 +67,11 @@ const AddPost = () => {
     const [titleError, setTitleError] = useState(false);
     const [contentHelperText, setContentHelperText] = useState('');
     const [titleHelperText, setTitleHelperText] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
     const [isPublishing, setIsPublishing] = useState(true);
+    const {refreshPostListKey, increasePostListKey} = useContext(PostListContext);
+
 
     // is Login
     const {loginConfig, setLoginConfig} = useContext(LoginContext);
@@ -102,6 +129,24 @@ const AddPost = () => {
         setPostContentText(value);
     }
 
+    const addAndSwitchNetwork = async (provider) => {
+        try {
+            // 检查用户是否已经在你设定的网络上
+            await provider.send('wallet_switchEthereumChain', [{chainId: chainId}]);
+        } catch (switchError) {
+            // 如果用户不在你设定的网络上，尝试向用户的MetaMask钱包添加该网络
+            if (switchError.code === 4902) {
+                try {
+                    await provider.send('wallet_addEthereumChain', [chainInfo]);
+                } catch (addError) {
+                    console.error(addError);
+                }
+            } else {
+                console.error(switchError);
+            }
+        }
+    }
+
 
     const onPublishPost = () => {
         let validateContent = validatePostContent(postContentText)
@@ -111,7 +156,8 @@ const AddPost = () => {
         }
 
         // 开始发布，展示加载动画
-        setIsPublishing(false);
+        //setIsPublishing(false);
+        setIsLoading(true);
         let reqBody = {
             "address": window.localStorage.getItem("userWalletAddress"),
             "title": postTitleText,
@@ -122,23 +168,59 @@ const AddPost = () => {
                 "Content-Type": "application/json"
             }
         }
-        http.post("/api/v1/post/add", reqBody, config).then(response => {
+        http.post("/api/v1/post/add", reqBody, config).then(async response => {
             if (response.data.code === "000000") {
-                // 清理内容
-                setPostContentText("");
-                setPostTitleText("");
-                setOpen(false);
-                // 发布成功，弹出toast
-                setToastConfig({toastOpen: true, msg: "Publish Success!"})
+
+                // 这里去调用合约存储自己发布的帖子ID
+                let postId = response.data.data;
+
+                await window.ethereum.request({method: 'eth_requestAccounts'});
+                const provider = new ethers.BrowserProvider(window.ethereum);
+                await addAndSwitchNetwork(provider);
+                const signer = await provider.getSigner();
+                const contract = new ethers.Contract(POST_CONTRACT_ADDRESS, POST_CONTRACT_ABI, signer);
+                contract.storePostId(postId).then(tx => {
+                    return tx.wait();
+                }).then(result => {
+                    let txHash = result.hash;
+                    console.log('Transaction hash:', txHash);
+                    let linkUrl = chainInfo.blockExplorerUrls + "/tx/" + txHash;
+                    // 清理内容
+                    setPostContentText("");
+                    setPostTitleText("");
+                    setOpen(false);
+                    // 关闭遮罩
+                    setIsLoading(false);
+                    // 发布成功，弹出toast
+                    setToastConfig({
+                        toastOpen: true,
+                        msg: (
+                            <>
+                                Publish Success! Transaction:
+                                <Link
+                                    href={linkUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{color: 'green'}}
+                                >
+                                    {txHash}
+                                </Link>
+                            </>
+                        )
+                    });
+
+                }, error => {
+                    console.log('Failed to store post ID in the contract', error);
+                });
+
             }
         }).catch(error => {
+            setIsLoading(false);
             setToastConfig({toastOpen: true, msg: "Publish Fail!"})
             console.log(error);
         }).finally(() => {
             // 调用发布接口，完成后将发布状态重置
-            setIsPublishing(true)
-            // 刷新整个window，临时方法
-            window.location.reload();
+            increasePostListKey()
         });
 
     }
@@ -238,6 +320,9 @@ const AddPost = () => {
                     >
                         <Button onClick={onPublishPost}>Post</Button>
                     </ButtonGroup>
+                    <Backdrop open={isLoading} style={{zIndex: 1500, color: '#fff'}}>
+                        <CircularProgress color="inherit"/>
+                    </Backdrop>
                 </Box>
             </StyledModal>
         </>

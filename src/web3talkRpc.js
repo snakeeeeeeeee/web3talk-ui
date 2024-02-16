@@ -3,8 +3,8 @@ import axios from 'axios';
 // 创建一个axios实例
 const http = axios.create({
     baseURL: 'http://114.132.177.135:12345',
-    //baseURL: 'http://127.0.0.1:12345',
-    timeout: 3000,
+    //baseURL: 'http://127.0.0.1:8080',
+    timeout: 30000,
     headers: { 'X-Custom-Header': 'foobar' }
 });
 
@@ -12,7 +12,7 @@ const http = axios.create({
 http.interceptors.request.use(function (config) {
     let userWalletAddress = window.localStorage.getItem("userWalletAddress");
     if (userWalletAddress == null) {
-        alert("请先登录")
+        console.log("请先登录")
     }
     return config;
 }, function (error) {
