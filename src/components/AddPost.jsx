@@ -212,6 +212,7 @@ const AddPost = () => {
                 }, error => {
                     setIsLoading(false);
                     console.log( error);
+
                 });
 
             }
