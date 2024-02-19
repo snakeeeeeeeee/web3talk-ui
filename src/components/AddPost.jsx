@@ -135,7 +135,7 @@ const AddPost = () => {
             await provider.send('wallet_switchEthereumChain', [{chainId: chainId}]);
         } catch (switchError) {
             // 如果用户不在你设定的网络上，尝试向用户的MetaMask钱包添加该网络
-            if (switchError.code === 4902) {
+            if (switchError.error.code === -32602) {
                 try {
                     await provider.send('wallet_addEthereumChain', [chainInfo]);
                 } catch (addError) {
